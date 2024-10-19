@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import socket from "@/lib/socket";
 import dynamic from "next/dynamic";
 import API from "@/lib/api";
+import useDebounce from "@/hook/useDebounce";
 
 import "react-quill/dist/quill.snow.css";
 
@@ -18,6 +19,7 @@ export default function DocumentPage({ params }: { params: { id: string } }) {
   const { id } = params;
   const [content, setContent] = useState<string>("");
   const [versions, setVersions] = useState<any[]>([]);
+  const debouncedContent = useDebounce(content, 500);
 
   const fetchDocument = async () => {
     try {
@@ -50,9 +52,6 @@ export default function DocumentPage({ params }: { params: { id: string } }) {
   const handleChangeContent = (value: string) => {
     setContent(value);
     socket.emit("edit-document", id, value);
-    API.put(`/api/document/${id}`, { content: value }).catch((error) =>
-      console.error("Failed to save document: ", error)
-    );
   };
 
   useEffect(() => {
@@ -73,29 +72,39 @@ export default function DocumentPage({ params }: { params: { id: string } }) {
     };
   }, [id]);
 
+  useEffect(() => {
+    if (debouncedContent) {
+      API.put(`/api/document/${id}`, { content: debouncedContent }).catch(
+        (error) => console.error("Failed to save document", error)
+      );
+    }
+  }, [debouncedContent]);
+
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold">Document ID: {id}</h1>
-      <div className="mt-4">
-        <QuillNoSSRWrapper
-          theme="snow"
-          value={content}
-          onChange={handleChangeContent}
-          className="bg-white p-2"
-        />
-      </div>
-      <div className="mt-4">
-        <h2 className="text-lg font-bold">Version History</h2>
-        {versions.map((version, index) => (
-          <div key={index} className="mt-2">
-            <button
-              className="bg-gray-200 p-1 rounded hover:bg-gray-300 "
-              onClick={() => restoreVersionOfDocument(index)}
-            >
-              Restore Version {index + 1}
-            </button>
-          </div>
-        ))}
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Document ID: {id}</h1>
+        <div className="mt-4">
+          <QuillNoSSRWrapper
+            theme="snow"
+            value={content}
+            onChange={handleChangeContent}
+            className="bg-white p-2"
+          />
+        </div>
+        <div className="mt-4">
+          <h2 className="text-lg font-bold">Version History</h2>
+          {versions.map((version, index) => (
+            <div key={index} className="mt-2">
+              <button
+                className="bg-gray-200 p-1 rounded hover:bg-gray-300 "
+                onClick={() => restoreVersionOfDocument(index)}
+              >
+                Restore Version {index + 1}
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

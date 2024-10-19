@@ -32,7 +32,6 @@ const DocumentSchema = new Schema<IDocument>({
     {
       content: {
         type: String,
-        required: true,
       },
       timestamp: {
         type: Date,
