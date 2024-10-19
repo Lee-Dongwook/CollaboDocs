@@ -3,6 +3,7 @@ import http from "http";
 import { Server } from "socket.io";
 import cors from "cors";
 import connectDB from "./config/db";
+import authRoutes from "./routes/authRoutes";
 import documentRoutes from "./routes/documentRoutes";
 import { setupSocket } from "./socket/socketHandlers";
 
@@ -21,6 +22,7 @@ app.use(express.json());
 
 connectDB();
 
+app.use("/api/auth", authRoutes);
 app.use("/api/documents", documentRoutes);
 
 setupSocket(io);
