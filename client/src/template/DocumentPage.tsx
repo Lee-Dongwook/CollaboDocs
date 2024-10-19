@@ -80,17 +80,15 @@ export default function DocumentPage({ params }: DocumentPageProps) {
   }, [debouncedContent]);
 
   return (
-    <div className="p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Editing Document</h1>
-        <DocumentEditor id={id} />
-        <VersionHistory
-          versions={versions}
-          onRestore={restoreVersionOfDocument}
-        />
-        <ParticipantsList id={id} />
-        <Chat id={id} />
-      </div>
+    <div className="flex flex-col justify-center items-center min-h-screen">
+      <h1 className="text-2xl font-bold">Editing Document</h1>
+      <DocumentEditor id={id} />
+      <VersionHistory
+        versions={versions}
+        onRestore={restoreVersionOfDocument}
+      />
+      <ParticipantsList id={id} />
+      <Chat id={id} />
     </div>
   );
 }
