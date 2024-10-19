@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
@@ -16,6 +17,7 @@ const QuillNoSSRWrapper = dynamic(() => import("react-quill"), {
 export default function DocumentPage({ params }: { params: { id: string } }) {
   const { id } = params;
   const [content, setContent] = useState<string>("");
+  const [versions, setVersions] = useState<any[]>([]);
 
   const fetchDocument = async () => {
     try {
@@ -23,6 +25,25 @@ export default function DocumentPage({ params }: { params: { id: string } }) {
       setContent(data.content);
     } catch (error) {
       console.error("Failed to fetch document:", error);
+    }
+  };
+
+  const fetchVersionsOfDocument = async () => {
+    try {
+      const { data } = await API.get(`/api/documents/${id}/versions`);
+      setVersions(data);
+    } catch (error) {
+      console.error("Failed to fetch versions:", error);
+    }
+  };
+
+  const restoreVersionOfDocument = async (index: number) => {
+    try {
+      await API.put(`/api/documents/${id}/restore`, { versionIndex: index });
+      const { data } = await API.get(`/api/documents/${id}`);
+      setContent(data.content);
+    } catch (error) {
+      console.error("Failed to restore version:", error);
     }
   };
 
@@ -38,6 +59,7 @@ export default function DocumentPage({ params }: { params: { id: string } }) {
     if (!id) return;
 
     fetchDocument();
+    fetchVersionsOfDocument();
 
     socket.connect();
     socket.emit("join-document", id);
@@ -61,6 +83,19 @@ export default function DocumentPage({ params }: { params: { id: string } }) {
           onChange={handleChangeContent}
           className="bg-white p-2"
         />
+      </div>
+      <div className="mt-4">
+        <h2 className="text-lg font-bold">Version History</h2>
+        {versions.map((version, index) => (
+          <div key={index} className="mt-2">
+            <button
+              className="bg-gray-200 p-1 rounded hover:bg-gray-300 "
+              onClick={() => restoreVersionOfDocument(index)}
+            >
+              Restore Version {index + 1}
+            </button>
+          </div>
+        ))}
       </div>
     </div>
   );

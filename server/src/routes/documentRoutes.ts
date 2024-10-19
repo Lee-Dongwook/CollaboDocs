@@ -60,4 +60,39 @@ router.delete("/:id", verifyToken, async (req, res) => {
   }
 });
 
+router.get("/:id/versions", verifyToken, async (req, res) => {
+  try {
+    const document = await DocumentModel.findById(req.params.id);
+    if (!document) {
+      return res.status(404).json({ message: "Document not found" });
+    }
+
+    res.json(document.versions);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch versions", error });
+  }
+});
+
+router.put("/:id/restore", verifyToken, async (req, res) => {
+  const { versionIndex } = req.body;
+
+  try {
+    const document = await DocumentModel.findByIdAndUpdate(req.params.id);
+    if (
+      !document ||
+      versionIndex < 0 ||
+      versionIndex >= document.versions.length
+    ) {
+      return res.status(400).json({ message: "Invalid version index" });
+    }
+
+    document.content = document.versions[versionIndex].content;
+    await document.save();
+
+    res.json(document);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to restore version:", error });
+  }
+});
+
 export default router;
