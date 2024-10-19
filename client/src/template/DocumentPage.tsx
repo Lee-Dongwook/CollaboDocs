@@ -6,6 +6,8 @@ import { useState, useEffect } from "react";
 
 import DocumentEditor from "@/components/DocumentEditor";
 import VersionHistory from "@/components/VersionHistory";
+import ParticipantsList from "@/components/ParticipantsList";
+import Chat from "@/components/Chat";
 import useDebounce from "@/hook/useDebounce";
 import socket from "@/lib/socket";
 import API from "@/lib/api";
@@ -51,11 +53,6 @@ export default function DocumentPage({ params }: DocumentPageProps) {
     }
   };
 
-  const handleChangeContent = (value: string) => {
-    setContent(value);
-    socket.emit("edit-document", id, value);
-  };
-
   useEffect(() => {
     if (!id) return;
 
@@ -85,13 +82,15 @@ export default function DocumentPage({ params }: DocumentPageProps) {
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Document ID: {id}</h1>
+        <h1 className="text-2xl font-bold">Editing Document</h1>
+        <DocumentEditor id={id} />
+        <VersionHistory
+          versions={versions}
+          onRestore={restoreVersionOfDocument}
+        />
+        <ParticipantsList id={id} />
+        <Chat id={id} />
       </div>
-      <DocumentEditor content={content} onChange={handleChangeContent} />
-      <VersionHistory
-        versions={versions}
-        onRestore={restoreVersionOfDocument}
-      />
     </div>
   );
 }
