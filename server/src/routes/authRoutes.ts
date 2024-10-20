@@ -1,17 +1,18 @@
-import { Router } from "express";
+import { Router, type Response, type Request } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import UserModel from "../models/user.model";
 
 const router = Router();
 
-router.post("/register", async (req, res) => {
+router.post("/register", async (req: Request, res: Response): Promise<void> => {
   const { username, email, password } = req.body;
 
   try {
     const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: "Email already existed" });
+      res.status(400).json({ message: "Email already existed" });
+      return;
     }
 
     const newUser = new UserModel({ username, email, password });
@@ -21,18 +22,20 @@ router.post("/register", async (req, res) => {
   }
 });
 
-router.post("/login", async (req, res) => {
+router.post("/login", async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body;
 
   try {
     const user = await UserModel.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      res.status(400).json({ message: "Invalid credentials" });
+      return;
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      res.status(400).json({ message: "Invalid credentials" });
+      return;
     }
 
     const token = jwt.sign(
