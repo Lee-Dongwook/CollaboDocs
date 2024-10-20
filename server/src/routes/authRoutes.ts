@@ -51,7 +51,7 @@ router.post("/login", async (req: Request, res: Response): Promise<void> => {
       }
     );
 
-    res.json({ token, userId: user._id, username: user.username });
+    res.status(200).json({ token, userId: user._id, username: user.username });
   } catch (error) {
     res.status(500).json({ message: "Login failed", error });
   }
