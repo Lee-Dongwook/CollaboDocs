@@ -1,17 +1,28 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI as string;
+const connection: { isConnected?: number } = {};
 
-export default async function dbConnect() {
+const connectDB = async () => {
+  if (connection.isConnected) {
+    return;
+  }
+
+  if (!process.env.MONGODB_URI) {
+    console.log("Error: Invalid MONGODB URI");
+  }
+
   try {
-    const { connection } = await mongoose.connect(MONGODB_URI as string, {
-      serverSelectionTimeoutMS: 20000,
-    });
-    if (connection.readyState === 1) {
-      return Promise.resolve(true);
+    const db = await mongoose.connect(process.env.MONGODB_URI!);
+    connection.isConnected = db.connections[0].readyState;
+
+    if (connection.isConnected === 1) {
+      console.log("Successfully connected to MongoDB");
+    } else {
+      console.log("Failed to connect to MongoDB");
     }
   } catch (error) {
-    console.error(error);
-    return Promise.reject(error);
+    console.log("Failed to connect to MongoDB", (error as Error).message);
   }
-}
+};
+
+export default connectDB;

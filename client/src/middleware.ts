@@ -1,14 +1,20 @@
-import { NextRequest, NextResponse } from "next/server";
+import { withAuth } from "next-auth/middleware";
+import { NextResponse } from "next/server";
 
-export function middleware(req: NextRequest) {
-  const token = req.cookies.get("authToken");
+export default withAuth(
+  function middleware(req) {
+    const { token } = req.nextauth;
+    const { pathname, origin } = req.nextUrl;
 
-  if (!token && req.nextUrl.pathname.startsWith("/document")) {
-    return NextResponse.redirect(new URL("/login", req.url));
+    if (pathname.startsWith("/document") && token?.role !== "admin") {
+      return NextResponse.redirect(`${origin}/unauthorized`);
+    }
+  },
+  {
+    callbacks: {
+      authorized: ({ token }) => !!token,
+    },
   }
-  return NextResponse.next();
-}
+);
 
-export const config = {
-  matcher: ["/document/:path*"],
-};
+export const config = { matcher: ["/document/:path*"] };
