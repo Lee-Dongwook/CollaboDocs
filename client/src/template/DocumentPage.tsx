@@ -8,7 +8,7 @@ import DocumentEditor from "@/components/DocumentEditor";
 import VersionHistory from "@/components/VersionHistory";
 import ParticipantsList from "@/components/ParticipantsList";
 import Chat from "@/components/Chat";
-import useDebounce from "@/hook/useDebounce";
+import useDebounce from "@/hooks/useDebounce";
 import socket from "@/lib/socket";
 import API from "@/lib/api";
 

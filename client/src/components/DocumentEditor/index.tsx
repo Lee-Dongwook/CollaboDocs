@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from "react";
 import QuillEditor from "@/components/QuillEditor";
-import useDebounce from "@/hook/useDebounce";
+import useDebounce from "@/hooks/useDebounce";
 import API from "@/lib/api";
 import socket from "@/lib/socket";
 import {
