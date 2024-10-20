@@ -17,7 +17,12 @@ router.post("/register", async (req: Request, res: Response): Promise<void> => {
 
     const newUser = new UserModel({ username, email, password });
     await newUser.save();
+
+    res
+      .status(200)
+      .json({ message: "User registered successfully", user: newUser });
   } catch (error) {
+    console.error("Registeration error:", error);
     res.status(500).json({ message: "Registration failed" });
   }
 });

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState } from "react";
@@ -20,9 +21,13 @@ export default function RegisterPage() {
 
     try {
       await API.post("/api/auth/register", registerData);
+
       router.push("/login");
-    } catch (error) {
-      console.error("Registration failed", error);
+    } catch (error: any) {
+      if (error.response) {
+        console.error("Registration failed", error.response.data);
+      }
+      console.error("Registration failed", error.message);
     }
   };
 
