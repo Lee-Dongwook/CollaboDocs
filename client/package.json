@@ -14,7 +14,11 @@
   "dependencies": {
     "@tanstack/react-query": "^5.59.15",
     "axios": "^1.7.7",
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
     "idb": "^8.0.0",
+    "mock-aws-s3": "^4.0.2",
+    "mongoose": "^8.7.2",
     "next": "14.2.15",
     "next-auth": "^4.24.8",
     "react": "^18",
