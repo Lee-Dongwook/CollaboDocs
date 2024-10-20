@@ -18,10 +18,11 @@ export default function LoginPage() {
         body: JSON.stringify({ email, password }),
       });
 
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
-      } else {
+      if (response.ok) {
+        alert("Login Success");
         router.push("/document");
+      } else {
+        throw new Error(`Error: ${response.status}`);
       }
     } catch (error: unknown) {
       console.error("Login failed:", error);
