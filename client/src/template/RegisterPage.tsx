@@ -1,47 +1,21 @@
-"use client";
-
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { signUpWithCredentials } from "@/lib/authAction";
 import RegisterForm from "@/components/RegisterForm";
 
-export default function RegisterPage() {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [username, setUsername] = useState<string>("");
-
-  const router = useRouter();
-
-  const handleRegister = async () => {
-    try {
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email,
-          password,
-          username,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
-      } else {
-        router.push("/login");
-      }
-    } catch (error: unknown) {
-      console.error("Registration failed:", error);
-    }
+interface RegisterPageProps {
+  searchParams: {
+    callbackUrl?: string;
   };
+}
 
+export default function RegisterPage({
+  searchParams: { callbackUrl },
+}: RegisterPageProps) {
   return (
-    <RegisterForm
-      email={email}
-      password={password}
-      username={username}
-      onEmailChange={setEmail}
-      onPasswordChange={setPassword}
-      onUsernameChange={setUsername}
-      onSubmit={handleRegister}
-    />
+    <div className="w-full">
+      <RegisterForm
+        callbackUrl={callbackUrl || "/"}
+        signUpWithCredentials={signUpWithCredentials}
+      />
+    </div>
   );
 }

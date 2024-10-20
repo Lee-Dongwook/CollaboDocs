@@ -1,49 +1,127 @@
+"use client";
+import { useForm } from "react-hook-form";
+import { useFormStatus } from "react-dom";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
+
 interface RegisterFormProps {
-  email: string;
-  password: string;
-  username: string;
-  onEmailChange: (value: string) => void;
-  onPasswordChange: (value: string) => void;
-  onUsernameChange: (value: string) => void;
-  onSubmit: () => void;
+  callbackUrl?: string;
+  signUpWithCredentials: (values) => Promise<{ success?: boolean }>;
 }
 
 export default function RegisterForm({
-  email,
-  password,
-  username,
-  onEmailChange,
-  onPasswordChange,
-  onUsernameChange,
-  onSubmit,
+  signUpWithCredentials,
 }: RegisterFormProps) {
+  const router = useRouter();
+  const { pending } = useFormStatus();
+  const { toast } = useToast();
+
+  const form = useForm({
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
+
+  const onSubmit = async (values) => {
+    const res = await signUpWithCredentials(values);
+
+    if (res?.success) {
+      toast({
+        description: "Register Successfully",
+      });
+      router.push("/signin");
+    }
+  };
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Register</h1>
-      <input
-        type="text"
-        value={username}
-        onChange={(e) => onUsernameChange(e.target.value)}
-        placeholder="Username"
-        className="border p-2 mt-2 w-full"
-      />
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => onEmailChange(e.target.value)}
-        placeholder="Email"
-        className="border p-2 mt-2 w-full"
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => onPasswordChange(e.target.value)}
-        placeholder="Password"
-        className="border p-2 mt-2 w-full"
-      />
-      <button onClick={onSubmit} className="bg-blue-500 text-white p-2 mt-4">
-        Register
-      </button>
-    </div>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
+        <div className="space-y-2">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Username</FormLabel>
+                <FormControl>
+                  <Input placeholder="your username" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input placeholder="mail@example.com" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder="your password"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Confirm your password</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder="confirm your password"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <Button className="w-full mt-6" type="submit" disabled={pending}>
+          {pending ? "Submitting..." : "Sign Up"}
+        </Button>
+      </form>
+      <p className="text-center text-sm text-gray-600 mt-2">
+        Already have an account?&nbsp;
+        <Link className="text-blue-600 hover:underline" href="/signin">
+          Sign In
+        </Link>
+      </p>
+    </Form>
   );
 }
