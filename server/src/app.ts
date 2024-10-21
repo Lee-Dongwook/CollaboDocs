@@ -27,6 +27,11 @@ const io = new Server(server, {
 io.on("connection", (socket: Socket) => {
   console.log("User connected:", socket.id);
 
+  socket.on("login", (userId) => {
+    console.log(`User ${userId} logged in`);
+    socket.emit("message", "Hello! You are Logged In!");
+  });
+
   socket.on("message", (msg) => {
     console.log("Message from client:", msg);
     io.emit("message", msg);

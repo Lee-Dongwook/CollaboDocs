@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 
 import AuthProvider from "@/providers/auth-provider";
 import ThemeProvider from "@/providers/theme-provider";
+import ReduxProvider from "@/providers/redux-provider";
 import Navbar from "@/components/NavLink";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -22,20 +23,22 @@ export default function RootLayout({
   return (
     <html suppressHydrationWarning lang="en">
       <body className={inter.className}>
-        <AuthProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <Navbar />
-            <main className="flex flex-col justify-center items-center min-h-screen">
-              {children}
-            </main>
-            <Toaster />
-          </ThemeProvider>
-        </AuthProvider>
+        <ReduxProvider>
+          <AuthProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <Navbar />
+              <main className="flex flex-col justify-center items-center min-h-screen">
+                {children}
+              </main>
+              <Toaster />
+            </ThemeProvider>
+          </AuthProvider>
+        </ReduxProvider>
       </body>
     </html>
   );
