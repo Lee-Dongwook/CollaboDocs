@@ -1,6 +1,6 @@
 import express, { type Application } from "express";
 import http from "http";
-import { Server } from "socket.io";
+import { Server, Socket } from "socket.io";
 import cors from "cors";
 import connectDB from "./config/db";
 import authRoutes from "./routes/authRoutes";
@@ -10,6 +10,11 @@ import { setupSocket } from "./socket/socketHandlers";
 const app: Application = express();
 const server = http.createServer(app);
 
+app.use(cors());
+app.use(express.json());
+
+connectDB();
+
 const io = new Server(server, {
   cors: {
     origin: "*",
@@ -18,21 +23,22 @@ const io = new Server(server, {
   },
 });
 
-app.use(cors());
-app.use(express.json());
-
-connectDB();
-
-io.on("connection", (socket) => {
+// 기본 소켓 연결 설정
+io.on("connection", (socket: Socket) => {
   console.log("User connected:", socket.id);
-
-  socket.on("disconnect", () => {
-    console.log("User disconnected");
-  });
 
   socket.on("message", (msg) => {
     console.log("Message from client:", msg);
     io.emit("message", msg);
+  });
+
+  socket.on("update", (data) => {
+    console.log("Update received: ", data);
+    io.emit("update", data);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected", socket.id);
   });
 });
 

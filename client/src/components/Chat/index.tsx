@@ -12,20 +12,27 @@ export default function Chat({ id }: ChatProps) {
   const [message, setMessage] = useState<string>("");
   const [messages, setMessages] = useState<string[]>([]);
 
-  const sendMessage = () => {
-    socket.emit("send-message", message);
-    setMessages((prevMessages) => [...prevMessages, message]);
-    setMessage("");
+  const handleSendMessage = () => {
+    if (message.trim()) {
+      socket.emit("message", message);
+      setMessages((prevMessages) => [...prevMessages, `You : ${message}`]);
+      setMessage("");
+    }
+  };
+
+  const handleReceiveMessage = (receivedMessage: string) => {
+    toast.success("New message received");
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      `Other: ${receivedMessage}`,
+    ]);
   };
 
   useEffect(() => {
-    socket.on("receive-message", (message: string) => {
-      toast("New message received");
-      setMessages((prevMessages) => [...prevMessages, message]);
-    });
+    socket.on("message", handleReceiveMessage);
 
     return () => {
-      socket.off("receive-message");
+      socket.off("message", handleReceiveMessage);
     };
   }, [id]);
 
@@ -44,8 +51,12 @@ export default function Chat({ id }: ChatProps) {
         onChange={(e) => setMessage(e.target.value)}
         className="border p-2 w-full mt-2"
         placeholder="Type a message..."
+        onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
       />
-      <button onClick={sendMessage} className="bg-blue-500 text-white p-2 mt-2">
+      <button
+        onClick={handleSendMessage}
+        className="bg-blue-500 text-white p-2 mt-2"
+      >
         Send
       </button>
     </div>
