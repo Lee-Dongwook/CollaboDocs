@@ -4,6 +4,10 @@ import { useForm } from "react-hook-form";
 import { useFormStatus } from "react-dom";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAppDispatch } from "@/store";
+import { addNotification } from "@/store/notificationSlice";
+import socket from "@/lib/socket";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -20,8 +24,15 @@ interface LoginFormProps {
   callbackUrl?: string;
 }
 
+interface LoginValues {
+  email: string;
+  password: string;
+}
+
 export default function LoginForm({ callbackUrl }: LoginFormProps) {
   const { pending } = useFormStatus();
+  const dispatch = useAppDispatch();
+  const router = useRouter();
 
   const form = useForm({
     defaultValues: {
@@ -30,12 +41,38 @@ export default function LoginForm({ callbackUrl }: LoginFormProps) {
     },
   });
 
-  const onSubmit = async (values) => {
-    await signIn("credentials", {
+  const onSubmit = async (values: LoginValues) => {
+    const result = await signIn("credentials", {
       email: values.email,
       password: values.password,
-      callbackUrl,
+      redirect: false,
     });
+
+    if (result?.ok) {
+      socket.emit("login", values.email);
+
+      socket.on("message", (message: string) => {
+        dispatch(
+          addNotification({
+            id: Date.now().toString(),
+            message,
+            type: "success",
+          })
+        );
+      });
+
+      if (callbackUrl) {
+        router.push(callbackUrl);
+      }
+    } else {
+      dispatch(
+        addNotification({
+          id: Date.now().toString(),
+          message: "Failed to sign in",
+          type: "error",
+        })
+      );
+    }
   };
 
   return (
