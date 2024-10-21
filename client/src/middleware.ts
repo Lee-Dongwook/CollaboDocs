@@ -18,5 +18,5 @@ export default withAuth(
 );
 
 export const config = {
-  matcher: ["/document/:path*", "/profile", "/setting", "/chat"],
+  matcher: ["/document/:path*", "/profile", "/setting", "/chat", "/peer"],
 };

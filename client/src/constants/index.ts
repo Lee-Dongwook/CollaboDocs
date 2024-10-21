@@ -3,7 +3,5 @@ export const mainNavLinks = [
   { title: "My Documents", url: "/document" },
   { title: "Create Document", url: "/document/new" },
   { title: "Real-time Collaboration", url: "/document/realtime" },
-  { title: "Profile", url: "/profile" },
-  { title: "settings", url: "/setting" },
-  { title: "Chat", url: "/chat" },
+  { title: "Peer Call", url: "/peer" },
 ];

@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
+import NextSessionProvider from "@/providers/session-provider";
 import AuthProvider from "@/providers/auth-provider";
 import ThemeProvider from "@/providers/theme-provider";
 import ReduxProvider from "@/providers/redux-provider";
@@ -23,22 +24,24 @@ export default function RootLayout({
   return (
     <html suppressHydrationWarning lang="en">
       <body className={inter.className}>
-        <ReduxProvider>
-          <AuthProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <Navbar />
-              <main className="flex flex-col justify-center items-center min-h-screen">
-                {children}
-              </main>
-              <Toaster />
-            </ThemeProvider>
-          </AuthProvider>
-        </ReduxProvider>
+        <NextSessionProvider>
+          <ReduxProvider>
+            <AuthProvider>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+              >
+                <Navbar />
+                <main className="flex flex-col justify-center items-center min-h-screen">
+                  {children}
+                </main>
+                <Toaster />
+              </ThemeProvider>
+            </AuthProvider>
+          </ReduxProvider>
+        </NextSessionProvider>
       </body>
     </html>
   );
