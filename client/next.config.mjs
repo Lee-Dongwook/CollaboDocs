@@ -6,6 +6,19 @@ const nextConfig = {
   },
   webpack(config) {
     config.experiments = { ...config.experiments, topLevelAwait: true };
+
+    config.module.rules.push({
+      test: /\.(mp4|webm|ogg|swf|avi)$/,
+      use: {
+        loader: "file-loader",
+        options: {
+          outputPath: "static/videos",
+          publicPath: "/_next/static/videos",
+          name: "[name].[hash].[ext]",
+        },
+      },
+    });
+
     return config;
   },
 };

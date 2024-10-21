@@ -26,6 +26,7 @@
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "file-loader": "^6.2.0",
     "idb": "^8.0.0",
     "lucide-react": "^0.453.0",
     "mock-aws-s3": "^4.0.2",
