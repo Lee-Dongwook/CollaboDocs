@@ -14,6 +14,7 @@ const io = new Server(server, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"],
+    credentials: true,
   },
 });
 
@@ -21,6 +22,19 @@ app.use(cors());
 app.use(express.json());
 
 connectDB();
+
+io.on("connection", (socket) => {
+  console.log("User connected:", socket.id);
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected");
+  });
+
+  socket.on("message", (msg) => {
+    console.log("Message from client:", msg);
+    io.emit("message", msg);
+  });
+});
 
 app.use("/api/auth", authRoutes);
 app.use("/api/documents", documentRoutes);
