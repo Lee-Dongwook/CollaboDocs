@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import MuxPlayer from "@mux/mux-player-react";
 import getMainVideoJSON from "@/videos/MainVideo.mp4.json";
@@ -8,20 +8,52 @@ import MainFeatureCard from "@/components/MainFeatureCard";
 import { Button } from "@/components/ui/button";
 
 export default function StartPage() {
-  const playbackId = getMainVideoJSON.providerMetadata.mux.playbackId;
-
+  const [isVideoReady, setIsVideoReady] = useState(false);
+  const [playbackId, setPlaybackId] = useState<string | null>(null);
   const router = useRouter();
 
+  useEffect(() => {
+    const fetchPlaybackId = async () => {
+      try {
+        const videoData = await getMainVideoJSON;
+        setPlaybackId(videoData.providerMetadata.mux.playbackId);
+        setIsVideoReady(true);
+      } catch (error) {
+        console.error("Failed to load video data:", error);
+      }
+    };
+
+    fetchPlaybackId();
+  }, []);
+
   return (
-    <div className="flex flex-row lg:space-x-10 justify-center items-center mx-auto min-h-screen p-6">
-      <MuxPlayer
-        streamType="on-demand"
-        playbackId={playbackId}
-        metadataVideoTitle="MainVideo"
-        metadataViewerUserId="MainVideo"
-        primaryColor="#FFFFFF"
-        secondaryColor="#000000"
-      />
+    <div className="relative flex flex-col lg:flex-row lg:space-x-10 justify-center items-center mx-auto min-h-screen p-6">
+      <div
+        className="relative w-full lg:w-2/3 h-auto mb-8 lg:mb-0"
+        style={{
+          minHeight: "480px",
+          aspectRatio: "16/9",
+          transition: "min-height 0.3s ease, min-width 0.3s ease",
+        }}
+      >
+        {playbackId && (
+          <MuxPlayer
+            streamType="on-demand"
+            playbackId={playbackId}
+            metadataVideoTitle="MainVideo"
+            metadataViewerUserId="MainVideo"
+            primaryColor="#FFFFFF"
+            secondaryColor="#000000"
+            className="w-full h-full object-cover rounded-lg shadow-lg"
+            onLoadedData={() => setIsVideoReady(true)}
+          />
+        )}
+        {!isVideoReady && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70 z-10">
+            <p className="text-white text-lg">Loading video...</p>
+          </div>
+        )}
+      </div>
       <div className="mt-10 lg:mt-0 text-center lg:text-left px-4">
         <h1 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-6">
           CollaboDocs
@@ -49,7 +81,7 @@ export default function StartPage() {
         </div>
         <Button
           onClick={() => router.push("/signin")}
-          className="w-full mt-12  bg-gray-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg shadow-md transition duration-300"
+          className="w-full mt-12 bg-gray-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg shadow-md transition duration-300"
         >
           시작하기
         </Button>
