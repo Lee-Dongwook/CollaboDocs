@@ -54,7 +54,6 @@ export default function LoginForm({ callbackUrl }: LoginFormProps) {
       socket.on("message", (message: string) => {
         dispatch(
           addNotification({
-            id: Date.now().toString(),
             message,
             type: "success",
           })
@@ -67,7 +66,6 @@ export default function LoginForm({ callbackUrl }: LoginFormProps) {
     } else {
       dispatch(
         addNotification({
-          id: Date.now().toString(),
           message: "Failed to sign in",
           type: "error",
         })

@@ -1,8 +1,9 @@
 import Link from "next/link";
+import { Code } from "lucide-react";
 import MainNav from "@/components/NavLink/main-nav";
 import UserNav from "@/components/NavLink/user-nav";
 import ModeToggle from "@/components/ModeToggle";
-import { Code } from "lucide-react";
+import Notification from "@/components/Notification";
 
 export default function Navbar() {
   return (
@@ -12,8 +13,9 @@ export default function Navbar() {
           <Code />
         </Link>
         <MainNav />
-        <div className="ml-auto flex items-center space-x-4">
+        <div className="ml-auto mr-10 flex items-center space-x-10">
           <ModeToggle />
+          <Notification />
           <UserNav />
         </div>
       </nav>
