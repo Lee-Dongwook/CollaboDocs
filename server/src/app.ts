@@ -2,16 +2,21 @@ import express, { type Application } from "express";
 import http from "http";
 import { Server, Socket } from "socket.io";
 import cors from "cors";
+import dotenv from "dotenv";
+import { ExpressPeerServer } from "peer";
 import connectDB from "./config/db";
 import authRoutes from "./routes/authRoutes";
 import documentRoutes from "./routes/documentRoutes";
 import { setupSocket } from "./socket/socketHandlers";
+
+dotenv.config();
 
 const app: Application = express();
 const server = http.createServer(app);
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static("public"));
 
 connectDB();
 
@@ -47,8 +52,13 @@ io.on("connection", (socket: Socket) => {
   });
 });
 
+const peerServer = ExpressPeerServer(server, {
+  allow_discovery: true,
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/documents", documentRoutes);
+app.use("/myapp", peerServer);
 
 setupSocket(io);
 

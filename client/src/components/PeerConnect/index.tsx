@@ -43,7 +43,7 @@ export default function PeerConnect() {
     if (uniqueId && typeof window !== "undefined") {
       const peer: Peer = new Peer(uniqueId, {
         host: "localhost",
-        port: 9000,
+        port: 4000,
         path: "/myapp",
       });
 
