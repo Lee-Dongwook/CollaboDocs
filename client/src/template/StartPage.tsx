@@ -3,11 +3,12 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import MuxPlayer from "@mux/mux-player-react";
+import getMainVideoJSON from "@/videos/MainVideo.mp4.json";
 import MainFeatureCard from "@/components/MainFeatureCard";
 import { Button } from "@/components/ui/button";
 
 export default function StartPage() {
-  const playbackId = process.env.MUX_PLAYER_PLAYBACKID as string;
+  const playbackId = getMainVideoJSON.providerMetadata.mux.playbackId;
 
   const router = useRouter();
 
