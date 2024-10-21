@@ -1,28 +1,25 @@
 "use client";
 
 import React from "react";
-// import Image from "next/image";
 import { useRouter } from "next/navigation";
-// import MainBanner from "@/assets/img/MainBanner.png";
+import MuxPlayer from "@mux/mux-player-react";
 import MainFeatureCard from "@/components/MainFeatureCard";
-import VideoPlayer from "@/components/VideoPlayer";
 import { Button } from "@/components/ui/button";
 
 export default function StartPage() {
+  const playbackId = process.env.MUX_PLAYER_PLAYBACKID as string;
+
   const router = useRouter();
 
   return (
     <div className="flex flex-row lg:space-x-10 justify-center items-center mx-auto min-h-screen p-6">
-      {/* <Image
-        src={MainBanner}
-        alt="Main Banner"
-        width={700}
-        height={400}
-        className="rounded-lg shadow-lg"
-      /> */}
-      <VideoPlayer
-        src="/video/MainVideo.mp4"
-        className="w-full lg:w-2/3 h-64 lg:h-auto mb-8 lg:mb-0"
+      <MuxPlayer
+        streamType="on-demand"
+        playbackId={playbackId}
+        metadataVideoTitle="MainVideo"
+        metadataViewerUserId="MainVideo"
+        primaryColor="#FFFFFF"
+        secondaryColor="#000000"
       />
       <div className="mt-10 lg:mt-0 text-center lg:text-left px-4">
         <h1 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-6">

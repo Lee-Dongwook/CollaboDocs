@@ -1,3 +1,4 @@
+import { withNextVideo } from "next-video/process";
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
@@ -9,18 +10,20 @@ const nextConfig = {
 
     config.module.rules.push({
       test: /\.(mp4|webm|ogg|swf|avi)$/,
-      use: {
-        loader: "file-loader",
-        options: {
-          outputPath: "static/videos",
-          publicPath: "/_next/static/videos",
-          name: "[name].[hash].[ext]",
+      use: [
+        {
+          loader: "file-loader",
+          options: {
+            outputPath: "static/videos",
+            publicPath: "/_next/static/videos",
+            name: "[name].[hash].[ext]",
+          },
         },
-      },
+      ],
     });
 
     return config;
   },
 };
 
-export default nextConfig;
+export default withNextVideo(nextConfig);
