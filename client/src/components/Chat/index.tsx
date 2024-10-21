@@ -52,7 +52,7 @@ export default function Chat({ roomId }: ChatProps) {
   };
 
   return (
-    <div className="flex flex-col h-full bg-white dark:bg-gray-800 rounded-lg shadow-md">
+    <div className="flex flex-col h-96 bg-white border border-black dark:bg-gray-800 rounded-lg shadow-md">
       <div className="flex-1 p-4 overflow-y-auto">
         {messages.map((msg, index) => (
           <div

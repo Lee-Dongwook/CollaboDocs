@@ -5,6 +5,9 @@ const nextConfig = {
     serverComponentsExternalPackages: ["mongoose"],
     serverActions: true,
   },
+  images: {
+    domains: ["via.placeholder.com"],
+  },
   webpack(config) {
     config.experiments = { ...config.experiments, topLevelAwait: true };
 
