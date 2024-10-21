@@ -45,7 +45,7 @@ export default function LoginForm({ callbackUrl }: LoginFormProps) {
     const result = await signIn("credentials", {
       email: values.email,
       password: values.password,
-      redirect: false,
+      callbackUrl: "/",
     });
 
     if (result?.ok) {
