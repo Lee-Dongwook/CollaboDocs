@@ -1,8 +1,10 @@
 "use server";
 
+import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 import connectDB from "@/lib/mongoDBConnect";
+import { nextAuthOptions } from "@/lib/nextAuthOptions";
 import User from "@/models/user.model";
 
 interface SignUpWithCredentialsParams {
@@ -17,6 +19,11 @@ interface SignInWithCredentialParams {
 }
 interface GetUserByEmailParams {
   email: string;
+}
+
+export async function getUserSession() {
+  const session = await getServerSession(nextAuthOptions);
+  return { session };
 }
 
 export async function signUpWithCredentials({
