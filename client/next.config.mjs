@@ -2,6 +2,7 @@
 const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ["mongoose"],
+    serverActions: true,
   },
   webpack(config) {
     config.experiments = { ...config.experiments, topLevelAwait: true };
