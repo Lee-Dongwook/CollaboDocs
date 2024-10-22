@@ -20,7 +20,21 @@ export default function DocumentListPage() {
     const fetchDocuments = async () => {
       try {
         const { data } = await API.get(`/api/documents`);
-        setDocuments(data);
+
+        if (data.length === 0) {
+          const dummyData = [
+            {
+              id: "1",
+              title: "기본 데이터",
+              createdAt: new Date().toISOString(),
+              contentPreview: "새로운 Document를 추가해주세요.",
+            },
+          ];
+
+          setDocuments(dummyData);
+        } else {
+          setDocuments(data);
+        }
       } catch (error) {
         console.error("Failed to fetch documents: ", error);
       } finally {
@@ -36,7 +50,7 @@ export default function DocumentListPage() {
       <h1 className="text-2xl font-bold mb-6">문서 목록</h1>
       {isLoading ? (
         <p>Loading documents...</p>
-      ) : (
+      ) : documents.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {documents.map((doc) => (
             <div
@@ -59,6 +73,13 @@ export default function DocumentListPage() {
               </Link>
             </div>
           ))}
+        </div>
+      ) : (
+        <div className="bg-gray-200 dark:bg-gray-700 shadow-md rounded-lg p-4 text-center col-span-full">
+          <p className="text-gray-800 dark:text-gray-300">No Data</p>
+          <p className="text-gray-500 dark:text-gray-400">
+            생성된 문서가 없습니다. 새 문서를 작성해보세요.
+          </p>
         </div>
       )}
     </div>

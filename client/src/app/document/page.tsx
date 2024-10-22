@@ -1,7 +1,5 @@
-import React from "react";
+import DocumentListPage from "@/template/DocumentListPage";
 
-const page = () => {
-  return <div>page</div>;
-};
-
-export default page;
+export default function Page() {
+  return <DocumentListPage />;
+}
