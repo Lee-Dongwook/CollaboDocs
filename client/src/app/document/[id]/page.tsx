@@ -1,5 +1,5 @@
-import DocumentPage from "@/template/DocumentPage";
+import DocumentDetailPage from "@/template/DocumentDetailPage";
 
 export default function Page(props) {
-  return <DocumentPage {...props} />;
+  return <DocumentDetailPage {...props} />;
 }

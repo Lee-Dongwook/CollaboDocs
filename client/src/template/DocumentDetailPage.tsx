@@ -12,13 +12,15 @@ import useDebounce from "@/hooks/useDebounce";
 import socket from "@/lib/socket";
 import API from "@/lib/api";
 
-interface DocumentPageProps {
+interface DocumentDetailPageProps {
   params: {
     id: string;
   };
 }
 
-export default function DocumentPage({ params }: DocumentPageProps) {
+export default function DocumentDetailPage({
+  params,
+}: DocumentDetailPageProps) {
   const { id } = params;
 
   const [content, setContent] = useState<string>("");
@@ -88,7 +90,7 @@ export default function DocumentPage({ params }: DocumentPageProps) {
         onRestore={restoreVersionOfDocument}
       />
       <ParticipantsList id={id} />
-      <Chat id={id} />
+      {/* <Chat id={id} /> */}
     </div>
   );
 }
