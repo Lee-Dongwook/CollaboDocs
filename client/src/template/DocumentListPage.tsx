@@ -5,6 +5,7 @@ import Link from "next/link";
 import API from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import DocumentTable from "@/components/DocumentTable";
 
 interface Document {
   id?: string;
@@ -47,6 +48,8 @@ export default function DocumentListPage() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center"></div>
+    <div className="min-h-screen flex flex-col items-center justify-center">
+      <DocumentTable />
+    </div>
   );
 }
